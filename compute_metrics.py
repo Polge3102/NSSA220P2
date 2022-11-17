@@ -28,7 +28,7 @@ def rd_compute(rd_seq_num_list, i):
                     reply_delay += (i[0] - seq[0])
                     rd_seq_num_list.remove(seq)   
 
-def compute(L):
+def compute(packet_list):
     global requests_sent
     global requests_sent_bytes
     global requests_sent_data
@@ -38,7 +38,7 @@ def compute(L):
     global replies_sent
     global replies_received
 
-    for i in L:
+    for i in packet_list:
         if (i[1] == host_ip and i[5] == "Request"):
             requests_sent += 1
             requests_sent_bytes += i[4]
