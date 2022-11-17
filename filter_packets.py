@@ -6,8 +6,10 @@ def filter(nodeFilename, outputFilename) :
 	while line:
 		line = captures.readline()
 		if line.count('Echo') >= 1:
-			filtered.write(line)
-			line = captures.readline()
+			captures.readline()
+			while line.count('0') >= 1:
+				filtered.write(line)
+				line = captures.readline()
 				
 		
 	captures.close()
