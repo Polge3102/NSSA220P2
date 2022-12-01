@@ -76,7 +76,7 @@ def compute(packet_list):
     print("Average Echo Request Hop Count," + str(total_hops/requests_sent))
 
 # Expecting a list of lists. Each list contains 7 values in a specific order. The time field to six decimal places, the source IP as a string, the destination IP as a string,
-# the 
+# the length of the frame as an int, whether it is a request or a reply as a string, the sequence number as a string (just the part before the slash), and the TTL as an int.
 L=[
 [0.000000, "192.168.200.1", "192.168.100.1", 74, "Request", "14", 128],
 [0.003678, "192.168.100.1", "192.168.200.1", 74, "Reply", "14", 126],
