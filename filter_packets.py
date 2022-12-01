@@ -10,6 +10,7 @@ def filter(nodeFilename, outputFilename) :
 			while line.count('0') >= 1:
 				filtered.write(line)
 				line = captures.readline()
+			filtered.write('\n')
 				
 		
 	captures.close()
