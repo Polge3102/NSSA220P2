@@ -12,7 +12,7 @@ def parse(filename, refrencelist) :
 
 	print('called parse function in packet_parser.py')
 
-	#Read threough file and store each frame as its own list
+	#Read through file and store each frame as its own list
 	#Each entry for frame is a line from said frame
 	with open(filename) as f:
 		for line in f:
@@ -31,8 +31,10 @@ def parse(filename, refrencelist) :
 	#EX: ['1408', '1415.388433', '', '', '', '192.168.100.1', '', '', '', '', '', '', '', '', '192.168.100.2', '', '', '', '', '', '', '', '', 'ICMP', '', '', '', '', '942', '
 	for x in temp2:
 		#grab first line and get rid of empty strings
-		temp3 = ' '.join(x[0].split(' ')).split()
 		#store cleaned line for later use
+		temp3 = ' '.join(x[0].split(' ')).split()
+		
+		#reset temp list for data storage
 		temp1 = list()
 
 		#time field to six decimal places
@@ -51,6 +53,7 @@ def parse(filename, refrencelist) :
 		temp1.append(temp3[8])
 
 		#sequence number as a string (just the part before the slash)
+		#this is not the most efficet method to do this but regex is giving me a hard time...
 		temp1.append(temp3[10].split('=')[1].split('/')[0])
 
 		#TTL as an int
