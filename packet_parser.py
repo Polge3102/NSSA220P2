@@ -2,6 +2,8 @@
 #DATE: 11-15-2022
 #ASSIGNMENT: NSSA 220 - Project 2
 
+#filename - filename as string of the document output from 'filter_packets.py'
+#refrencelist - list passed by refrence that final output will be placed in
 def parse(filename, refrencelist) :
 	temp1 = list()
 	temp2 = list()
