@@ -28,7 +28,7 @@ def rd_compute(rd_seq_num_list, i):
                     reply_delay += (i[0] - seq[0])
                     rd_seq_num_list.remove(seq)   
 
-def compute(packet_list):
+def compute(packet_list, output_file, host_ip):
     global requests_sent
     global requests_sent_bytes
     global requests_sent_data
@@ -39,17 +39,17 @@ def compute(packet_list):
     global replies_received
 
     for i in packet_list:
-        if (i[1] == host_ip and i[4] == "Request"):
+        if (i[1] == host_ip and i[4] == "request"):
             requests_sent += 1
             requests_sent_bytes += i[3]
             requests_sent_data += (i[3] - 42)
             rtt_seq_num_list.append([i[0], i[5], i[6]])
-        elif (i[1] != host_ip and i[4] == "Request"):
+        elif (i[1] != host_ip and i[4] == "request"):
             requests_received += 1
             requests_received_bytes += i[3]
             requests_received_data += (i[3] - 42)
             rd_seq_num_list.append([i[0], i[5]])
-        elif (i[1] == host_ip and i[4] == "Reply"):
+        elif (i[1] == host_ip and i[4] == "reply"):
             replies_sent += 1
             rd_compute(rd_seq_num_list, i)
         else:
@@ -61,36 +61,38 @@ def compute(packet_list):
     goodput = ((requests_sent_data/1000)/roundtrip_time)
     delay = (reply_delay/requests_received)
 
-    print("Echo Requests Sent,Echo Requests Received,Echo Replies Sent,Echo Replies Received")
-    print(str(requests_sent) + "," + str(requests_received) + "," + str(replies_sent) + "," + str(replies_received))   
-          
-    print("Echo Request Bytes Sent (bytes),Echo Request Data Sent (bytes)")
-    print(str(requests_sent_bytes) + "," + str(requests_sent_data))
-    print("Echo Request Bytes Received (bytes),Echo Request Data Received (bytes)")
-    print(str(requests_received_bytes) + "," + str(requests_received_data))
+    output = open(output_file, "w")
 
-    print("Average RTT (milliseconds)," + str(avg_rtt * 1000))
-    print("Echo Request Throughput (kB/sec)," + str(throughput))
-    print("Echo Request Goodput (kB/sec)," + str(goodput))
-    print("Average Reply Delay (microseconds),"+ str(delay * 1000000))
-    print("Average Echo Request Hop Count," + str(total_hops/requests_sent))
+    output.write("Echo Requests Sent,Echo Requests Received,Echo Replies Sent,Echo Replies Received \n")
+    output.write(str(requests_sent) + "," + str(requests_received) + "," + str(replies_sent) + "," + str(replies_received) + "\n")   
+          
+    output.write("Echo Request Bytes Sent (bytes),Echo Request Data Sent (bytes) \n")
+    output.write(str(requests_sent_bytes) + "," + str(requests_sent_data) + "\n")
+    output.write("Echo Request Bytes Received (bytes),Echo Request Data Received (bytes) \n")
+    output.write(str(requests_received_bytes) + "," + str(requests_received_data) + "\n")
+
+    output.write("Average RTT (milliseconds)," + str(round((avg_rtt * 1000), 2)) + "\n")
+    output.write("Echo Request Throughput (kB/sec)," + str(round(throughput, 2)) + "\n")
+    output.write("Echo Request Goodput (kB/sec)," + str(round(goodput, 2)) + "\n")
+    output.write("Average Reply Delay (microseconds),"+ str(round((delay * 1000000), 2)) + "\n")
+    output.write("Average Echo Request Hop Count," + str(round((total_hops/requests_sent), 2)) + "\n")
 
 # Expecting a list of lists. Each list contains 7 values in a specific order. The time field to six decimal places, the source IP as a string, the destination IP as a string,
 # the length of the frame as an int, whether it is a request or a reply as a string, the sequence number as a string (just the part before the slash), and the TTL as an int.
-L=[
-[0.000000, "192.168.200.1", "192.168.100.1", 74, "Request", "14", 128],
-[0.003678, "192.168.100.1", "192.168.200.1", 74, "Reply", "14", 126],
-[1.204302, "192.168.100.1", "192.168.200.1", 74, "Request", "19", 126],
-[1.204322, "192.168.200.1", "192.168.100.1", 74, "Reply", "19", 128],
-[1.500230, "192.168.200.1", "192.168.100.1", 74, "Request", "23", 128],
-[1.510221, "192.168.100.1", "192.168.200.1", 74, "Reply", "23", 127],
-[1.952140, "192.168.100.1", "192.168.200.1", 74, "Request", "28", 126],
-[1.952145, "192.168.200.1", "192.168.100.1", 74, "Reply", "28", 128],
-[2.001922, "192.168.200.1", "192.168.100.1", 74, "Request", "34", 128],
-[2.005032, "192.168.100.1", "192.168.200.1", 74, "Reply", "34", 128],
-[2.230000, "192.168.100.1", "192.168.200.1", 74, "Request", "40", 126],
-[2.230005, "192.168.200.1", "192.168.100.1", 74, "Reply", "40", 128]
-]
-host_ip = "192.168.200.1"
-compute(L)
+# L=[
+# [0.000000, "192.168.200.1", "192.168.100.1", 74, "Request", "14", 128],
+# [0.003678, "192.168.100.1", "192.168.200.1", 74, "Reply", "14", 126],
+# [1.204302, "192.168.100.1", "192.168.200.1", 74, "Request", "19", 126],
+# [1.204322, "192.168.200.1", "192.168.100.1", 74, "Reply", "19", 128],
+# [1.500230, "192.168.200.1", "192.168.100.1", 74, "Request", "23", 128],
+# [1.510221, "192.168.100.1", "192.168.200.1", 74, "Reply", "23", 127],
+# [1.952140, "192.168.100.1", "192.168.200.1", 74, "Request", "28", 126],
+# [1.952145, "192.168.200.1", "192.168.100.1", 74, "Reply", "28", 128],
+# [2.001922, "192.168.200.1", "192.168.100.1", 74, "Request", "34", 128],
+# [2.005032, "192.168.100.1", "192.168.200.1", 74, "Reply", "34", 128],
+# [2.230000, "192.168.100.1", "192.168.200.1", 74, "Request", "40", 126],
+# [2.230005, "192.168.200.1", "192.168.100.1", 74, "Reply", "40", 128]
+# ]
+# host_ip = "192.168.200.1"
+# compute(L)
   
